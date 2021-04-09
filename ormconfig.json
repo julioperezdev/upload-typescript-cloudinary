@@ -1,0 +1,10 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "protouser",
+    "password": "passuser",
+    "database": "UserDb",
+    "entities": ["dist/model/**/*.js"],
+    "syncronize" : true
+ }
