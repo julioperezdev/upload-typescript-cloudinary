@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePhotoById = exports.createPhotos = exports.getPhotoById = exports.getPhotos = void 0;
+exports.deletePhotoById = exports.createPhotos = exports.createProfile = exports.showPhotos = exports.getPhotoById = exports.getPhotos = void 0;
 const profileDatabase_1 = require("../database/profileDatabase");
 const getPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,6 +47,30 @@ const getPhotoById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getPhotoById = getPhotoById;
+const showPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    console.log(req.file);
+    return res.json({
+        data1: req.body,
+        data2: req.file
+    });
+});
+exports.showPhotos = showPhotos;
+const createProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    const { username } = req.body;
+    const newProfile = {
+        username: username
+    };
+    console.log(newProfile);
+    const createdProfile = yield profileDatabase_1.saveProfileByUsername(newProfile);
+    console.log(createdProfile.rows);
+    return res.json({
+        message: "Photo successfully saved",
+        userCreated: createdProfile.rows[0]
+    });
+});
+exports.createProfile = createProfile;
 const createPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const imageB = req.body;
     // console.log(imageB)

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProfileById = exports.saveProfile = exports.getProfileById = exports.getProfiles = void 0;
+exports.deleteProfileById = exports.saveProfile = exports.saveProfileByUsername = exports.getProfileById = exports.getProfiles = void 0;
 const database_1 = require("../database/config/database");
 const getProfiles = () => __awaiter(void 0, void 0, void 0, function* () {
     const query = yield database_1.pool.query(`SELECT * FROM profile;`);
@@ -21,6 +21,12 @@ const getProfileById = (profile) => __awaiter(void 0, void 0, void 0, function* 
     return query;
 });
 exports.getProfileById = getProfileById;
+//INSERT INTO Profile (username) values('maria') RETURNING idProfile, username;
+const saveProfileByUsername = (profile) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = yield database_1.pool.query(`INSERT INTO Profile (username) VALUES ( '${profile.username}') RETURNING idProfile, username;`);
+    return query;
+});
+exports.saveProfileByUsername = saveProfileByUsername;
 const saveProfile = (profile) => __awaiter(void 0, void 0, void 0, function* () {
     const query = yield database_1.pool.query(`INSERT INTO Profile (username, imageUrl, publicId) VALUES ( '${profile.username}', '${profile.imageURL}', '${profile.public_id}');`);
     return query;

@@ -1,8 +1,10 @@
 import {Request, Response} from "express"
 import { IProfile } from "../model/profile"
-import { getProfiles , saveProfile, getProfileById, deleteProfileById} from "../database/profileDatabase"
+import { getProfiles , saveProfile, saveProfileByUsername, getProfileById, deleteProfileById} from "../database/profileDatabase"
 import path from 'path'
 import fs from "fs-extra"
+
+
 
 export const getPhotos = async(req: Request, res:Response): Promise<Response> => {
 
@@ -46,6 +48,33 @@ export const getPhotoById = async(req: Request, res:Response): Promise<Response>
     }
 }
 
+export const showPhotos = async(req: Request, res:Response): Promise<Response> => {
+    console.log(req.body)
+    console.log(req.file)
+    return res.json({
+        data1: req.body,
+        data2: req.file
+        
+    })
+}
+
+export const createProfile = async(req: Request, res:Response): Promise<Response> => {
+
+    console.log(req.body)
+    const { username} = req.body;
+    const newProfile: IProfile = {
+        username: username
+    }
+    console.log(newProfile)
+    const createdProfile = await saveProfileByUsername(newProfile);
+    console.log(createdProfile.rows)
+
+    return res.json({
+        message: "Photo successfully saved",
+        userCreated: createdProfile.rows[0]
+        
+    })
+}
 
 export const createPhotos = async(req: Request, res:Response): Promise<Response> => {
 
