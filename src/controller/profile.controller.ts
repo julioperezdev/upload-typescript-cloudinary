@@ -1,8 +1,9 @@
 import {Request, Response} from "express"
 import { IProfile } from "../model/profile"
-import { getProfiles , saveProfile, saveProfileByUsername, getProfileById, deleteProfileById} from "../database/profileDatabase"
+import { getProfiles , saveProfile, saveProfileByUsername, getProfileById, deleteProfileById, uploadImageInformationProfileByUsername} from "../database/profileDatabase"
 import path from 'path'
 import fs from "fs-extra"
+import cloudinary from "../config/cloudinary"
 
 
 
@@ -49,12 +50,35 @@ export const getPhotoById = async(req: Request, res:Response): Promise<Response>
 }
 
 export const showPhotos = async(req: Request, res:Response): Promise<Response> => {
-    console.log(req.body)
+    const usernameProfile = req.params.username
     console.log(req.file)
     return res.json({
-        data1: req.body,
+        data1: usernameProfile,
         data2: req.file
         
+    })
+}
+
+
+export const UploadPhotosByUsername = async(req: Request, res:Response): Promise<Response> => {
+    const usernameProfile = req.params.username
+    console.log(req.file)
+
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    
+    const profile:IProfile = {
+        username : usernameProfile,
+        imageURL: result.url,
+        public_id: result.public_id
+    }
+    const updatedProfile = await uploadImageInformationProfileByUsername(profile);
+    
+    await fs.unlink(req.file.path)
+
+    return res.json({
+        usernameUpdated: updatedProfile,
+        status: 200 
     })
 }
 

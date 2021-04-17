@@ -12,8 +12,10 @@ router.route("/create")
 router.route("/photos")
     .get(profile_controller_1.getPhotos)
     .post(multer_1.default.single('image'), profile_controller_1.createPhotos);
-router.route("/photos/show")
+router.route("/photos/show/:username")
     .post(multer_1.default.single('image'), profile_controller_1.showPhotos);
+router.route("/photos/upload-image/:username")
+    .post(multer_1.default.single('image'), profile_controller_1.UploadPhotosByUsername);
 router.route("/photos/:idProfile")
     .get(profile_controller_1.getPhotoById)
     .delete(profile_controller_1.deletePhotoById);

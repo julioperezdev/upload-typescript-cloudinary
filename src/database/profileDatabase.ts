@@ -21,6 +21,12 @@ export const saveProfileByUsername = async(profile: IProfile) =>{
     return query;
 }
 
+//INSERT INTO Profile (username) values('maria') RETURNING idProfile, username;
+export const uploadImageInformationProfileByUsername = async(profile: IProfile) =>{
+    const query: QueryResult = await pool.query(`UPDATE profile SET imageurl = '${profile.imageURL}' , publicid = '${profile.public_id}' WHERE username = '${profile.username}' RETURNING username;`);
+    return query;
+}
+
 
 export const saveProfile = async(profile: IProfile) =>{
     const query: QueryResult = await pool.query(`INSERT INTO Profile (username, imageUrl, publicId) VALUES ( '${profile.username}', '${profile.imageURL}', '${profile.public_id}');`);

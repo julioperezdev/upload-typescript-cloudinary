@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePhotoById = exports.createPhotos = exports.createProfile = exports.showPhotos = exports.getPhotoById = exports.getPhotos = void 0;
+exports.deletePhotoById = exports.createPhotos = exports.createProfile = exports.UploadPhotosByUsername = exports.showPhotos = exports.getPhotoById = exports.getPhotos = void 0;
 const profileDatabase_1 = require("../database/profileDatabase");
+const fs_extra_1 = __importDefault(require("fs-extra"));
+const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 const getPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allProfiles = yield profileDatabase_1.getProfiles();
@@ -48,14 +53,31 @@ const getPhotoById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getPhotoById = getPhotoById;
 const showPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
+    const usernameProfile = req.params.username;
     console.log(req.file);
     return res.json({
-        data1: req.body,
+        data1: usernameProfile,
         data2: req.file
     });
 });
 exports.showPhotos = showPhotos;
+const UploadPhotosByUsername = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const usernameProfile = req.params.username;
+    console.log(req.file);
+    const result = yield cloudinary_1.default.uploader.upload(req.file.path);
+    const profile = {
+        username: usernameProfile,
+        imageURL: result.url,
+        public_id: result.public_id
+    };
+    const updatedProfile = yield profileDatabase_1.uploadImageInformationProfileByUsername(profile);
+    yield fs_extra_1.default.unlink(req.file.path);
+    return res.json({
+        usernameUpdated: updatedProfile,
+        status: 200
+    });
+});
+exports.UploadPhotosByUsername = UploadPhotosByUsername;
 const createProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const { username } = req.body;
